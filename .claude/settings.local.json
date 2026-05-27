@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(printf 'package com.enterprise.knowledge.interface.rest;\\\\n\\\\nimport com.enterprise.knowledge.application.service.DualEngineCoordinator;\\\\nimport com.enterprise.knowledge.application.service.RagService;\\\\nimport com.enterprise.knowledge.domain.ChatResponse;\\\\nimport org.springframework.http.MediaType;\\\\nimport org.springframework.http.ResponseEntity;\\\\nimport org.springframework.web.bind.annotation.*;\\\\nimport org.springframework.web.multipart.MultipartFile;\\\\n\\\\nimport java.io.IOException;\\\\nimport java.util.HashMap;\\\\nimport java.util.Map;\\\\n\\\\n@RestController\\\\n@RequestMapping\\(\"/api/v1\"\\)\\\\npublic class KnowledgeController {\\\\n    private final DualEngineCoordinator coordinator;\\\\n    private final RagService ragService;\\\\n\\\\n    public KnowledgeController\\(DualEngineCoordinator coordinator, RagService ragService\\) {\\\\n        this.coordinator = coordinator;\\\\n        this.ragService = ragService;\\\\n    }\\\\n\\\\n    @PostMapping\\(\"/chat\"\\)\\\\n    public ResponseEntity<ChatResponse> chat\\(@RequestBody ChatRequest request\\) {\\\\n        return ResponseEntity.ok\\(coordinator.answer\\(request.getQuery\\(\\)\\)\\);\\\\n    }\\\\n\\\\n    @GetMapping\\(\"/health\"\\)\\\\n    public ResponseEntity<Map<String, Object>> healthCheck\\(\\) {\\\\n        Map<String, Object> status = new HashMap<>\\(\\);\\\\n        status.put\\(\"status\", \"UP\"\\);\\\\n        return ResponseEntity.ok\\(status\\);\\\\n    }\\\\n\\\\n    public static class ChatRequest {\\\\n        private String query;\\\\n        public String getQuery\\(\\) { return query; }\\\\n        public void setQuery\\(String query\\) { this.query = query; }\\\\n    }\\\\n}\\\\n' > /Users/chenxi/Desktop/JAVA/backend/src/main/java/com/enterprise/knowledge/interface/rest/KnowledgeController.java)",
+      "Bash(mvn compile *)",
+      "Bash(cat > *)",
+      "Bash(mvn clean *)",
+      "Bash(rm /Users/chenxi/Desktop/JAVA/backend/src/main/java/com/enterprise/knowledge/config/SecurityConfig.java)",
+      "Bash(mvn dependency:tree)",
+      "Bash(mvn dependency:resolve -q)",
+      "Read(//Users/chenxi/.m2/repository/dev/langchain4j/langchain4j-embeddings-all-minilm-l6-v2/0.34.0/**)"
+    ],
+    "additionalDirectories": [
+      "/Users/chenxi/Desktop/JAVA/backend/src/main/java/com/enterprise/knowledge/interface/rest",
+      "/Users/chenxi/Desktop/JAVA/backend/src/main/java/com/enterprise/knowledge/infrastructure/vector",
+      "/Users/chenxi/Desktop/JAVA/backend/src/main/java/com/enterprise/knowledge/config",
+      "/Users/chenxi/Desktop/JAVA/backend/src/main/java/com/enterprise/knowledge/exception"
+    ]
+  }
+}

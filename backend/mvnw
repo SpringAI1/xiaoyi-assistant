@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Maven Wrapper for Enterprise Knowledge System
+# 下载并运行 Maven
+
+MVN_VERSION="3.9.6"
+MVN_DIR=".mvn/wrapper"
+JAR_FILE="$MVN_DIR/maven-wrapper.jar"
+WRAPPER_URL="https://raw.githubusercontent.com/apache/maven-wrapper/0.5.6/$MVN_DIR/maven-wrapper.jar"
+
+echo "Maven Wrapper - Enterprise Knowledge System"
+echo ""
+
+if [ ! -f "$JAR_FILE" ]; then
+    echo "Downloading Maven Wrapper..."
+    mkdir -p "$MVN_DIR"
+    curl -L -o "$JAR_FILE" "$WRAPPER_URL" 2>/dev/null || wget -O "$JAR_FILE" "$WRAPPER_URL" 2>/dev/null
+fi
+
+exec java -jar "$JAR_FILE" "$@"

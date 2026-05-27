@@ -1,0 +1,53 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+*~
+
+# Mac
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Database
+data/
+*.db
+*.mv.db
+
+# Environment variables
+.env
+*.env.local
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# AI API Keys (IMPORTANT: Don't commit these!)
+application-local.yml
+application-prod.yml
+
+# Test files
+*.class
+test-output/
+
+# Node modules (if any)
+node_modules/

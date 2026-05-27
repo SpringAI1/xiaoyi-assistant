@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>企业知识问答系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+    <div id="app">
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 6v6l4 2"></path>
+                    </svg>
+                </div>
+                <h2>知识问答系统</h2>
+            </div>
+            
+            <nav class="nav-menu">
+                <button class="nav-btn active" data-view="chat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span>智能问答</span>
+                </button>
+                <button class="nav-btn" data-view="documents">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                    <span>知识库管理</span>
+                </button>
+                <button class="nav-btn" data-view="settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <span>系统设置</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="system-status">
+                    <div class="status-dot online"></div>
+                    <span>系统在线</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="chat-view active-view">
+                <div class="chat-header">
+                    <div class="header-left">
+                        <h3>企业知识库助手</h3>
+                        <div class="status-badge online">
+                            <span class="status-indicator"></span>
+                            AI 已就绪
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <button class="refresh-btn" onclick="refreshChat()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 4 23 10 17 10"></polyline>
+                                <polyline points="1 20 1 14 7 14"></polyline>
+                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="chat-history" id="chatHistory">
+                    <div class="welcome-message">
+                        <div class="welcome-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                            </svg>
+                        </div>
+                        <h4>您好！我是企业知识库助手</h4>
+                        <p>有什么我可以帮助您的吗？</p>
+                        <div class="welcome-actions">
+                            <button class="action-btn" onclick="sendQuickQuestion('公司年假制度是什么？')">年假制度</button>
+                            <button class="action-btn" onclick="sendQuickQuestion('如何申请报销？')">报销流程</button>
+                            <button class="action-btn" onclick="sendQuickQuestion('员工手册')">员工手册</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <div class="input-wrapper">
+                        <textarea 
+                            id="userInput" 
+                            placeholder="输入您的问题..." 
+                            rows="1"
+                            onkeydown="handleKeyDown(event)"
+                        ></textarea>
+                        <button id="sendBtn" onclick="sendMessage()" class="send-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 21l-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="quick-questions">
+                        <span>快捷提问：</span>
+                        <button onclick="sendQuickQuestion('公司考勤制度')">考勤制度</button>
+                        <button onclick="sendQuickQuestion('加班政策')">加班政策</button>
+                        <button onclick="sendQuickQuestion('请假流程')">请假流程</button>
+                        <button onclick="sendQuickQuestion('福利待遇')">福利待遇</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="documents-view">
+                <div class="view-header">
+                    <h3>知识库管理</h3>
+                    <label class="upload-btn">
+                        <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt,.md,.xlsx,.xls" onchange="handleFileUpload()" hidden>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <span>上传文档</span>
+                    </label>
+                </div>
+
+                <div class="document-list" id="documentList">
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                        </svg>
+                        <p>暂无文档，点击上方按钮上传</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-view">
+                <div class="view-header">
+                    <h3>系统设置</h3>
+                </div>
+                <div class="settings-content">
+                    <div class="setting-section">
+                        <h4>AI 模型配置</h4>
+                        <label>模型名称</label>
+                        <input type="text" value="Qwen-3.5-Turbo" readonly>
+                        <p>当前使用阿里云 Qwen-3.5-Turbo 模型进行问答</p>
+                    </div>
+                    <div class="setting-section">
+                        <h4>检索配置</h4>
+                        <label>相似度阈值</label>
+                        <input type="text" value="0.75" readonly>
+                        <label>最大检索结果数</label>
+                        <input type="text" value="5" readonly>
+                    </div>
+                    <div class="setting-section">
+                        <h4>系统状态</h4>
+                        <div class="status-grid">
+                            <div class="status-card">
+                                <div class="status-icon green">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                    </svg>
+                                </div>
+                                <span>AI 服务</span>
+                                <span class="status-text">在线</span>
+                            </div>
+                            <div class="status-card">
+                                <div class="status-icon blue">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="9" cy="7" r="4"></circle>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                    </svg>
+                                </div>
+                                <span>知识库</span>
+                                <span class="status-text">0 文档</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
