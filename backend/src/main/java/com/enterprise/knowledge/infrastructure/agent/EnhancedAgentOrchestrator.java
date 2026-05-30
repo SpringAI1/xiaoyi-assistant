@@ -1,22 +1,30 @@
 package com.enterprise.knowledge.infrastructure.agent;
 
-import com.enterprise.knowledge.domain.ChatMessage;
 import com.enterprise.knowledge.infrastructure.agent.skill.Skill;
 import com.enterprise.knowledge.infrastructure.agent.skill.SkillRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 @Component
 public class EnhancedAgentOrchestrator {
 
+    private static final Logger logger = LoggerFactory.getLogger(EnhancedAgentOrchestrator.class);
+
     private final SkillRegistry skillRegistry;
     
     private static final List<String> MUSIC_KEYWORDS = Arrays.asList(
-        "周杰伦", "歌词", "歌曲", "音乐", "歌手", "专辑", "单曲",
-        "演唱会", "作曲", "作词", "歌名", "华语", "流行歌", "经典歌曲",
-        "晴天的歌词", "晴天歌词", "晴天的歌", "什么歌", "哪首歌"
+        "周杰伦", "邓紫棋", "薛之谦", "林俊杰", "陈奕迅", "张杰", "许嵩", 
+        "华晨宇", "王菲", "孙燕姿", "王力宏", "陶喆", "蔡依林", "李荣浩",
+        "五月天", "Beyond", "朴树", "许巍", "汪峰", "张韶涵", "梁静茹",
+        "刘若英", "任贤齐", "周华健", "费玉清", "张信哲", "刘德华", "张学友",
+        "郭富城", "黎明", "林宥嘉", "张靓颖", "周笔畅", "李宇春",
+        "歌词", "歌曲", "音乐", "歌手", "专辑", "单曲", "演唱会", "作曲", "作词",
+        "歌名", "华语", "流行歌", "经典歌曲", "热门歌曲", "新歌", "排行榜",
+        "播放", "听歌", "泡沫", "演员", "江南", "告白气球", "光年之外",
+        "天外来物", "绅士", "动物世界", "青花瓷", "晴天", "七里香", "稻香"
     );
 
     public EnhancedAgentOrchestrator(SkillRegistry skillRegistry) {
@@ -25,19 +33,32 @@ public class EnhancedAgentOrchestrator {
 
     public OrchestratorDecision decideAction(String query, String sessionId) {
         OrchestratorDecision decision = new OrchestratorDecision();
-        String lowerQuery = query.toLowerCase();
         
-        // 1. 首先检查是否为音乐相关查询
+        logger.info("正在处理用户查询: [{}]", query);
+        
+        // 1. 首先检查是否是音乐相关查询 - 最高优先级
         boolean isMusicQuery = isMusicQuery(query);
         if (isMusicQuery) {
-            // 音乐相关查询，直接使用RAG或普通对话，绝对不使用天气技能
-            decision.setActionType(ActionType.USE_RAG);
-            decision.setConfidence(0.95);
-            decision.setExplanation("识别为音乐相关查询，使用RAG引擎");
+            logger.info("✅ 识别为音乐查询");
+            // 音乐相关查询，优先使用 spotify-player-skill 获取真实歌词
+            Skill musicSkill = findSkillById("spotify-player");
+            if (musicSkill != null) {
+                logger.info("✅ 找到音乐技能: {}, 准备调用", musicSkill.getName());
+                decision.setActionType(ActionType.USE_SKILL);
+                decision.setTargetSkill(musicSkill);
+                decision.setConfidence(0.95);
+                decision.setExplanation("识别为音乐查询，使用网易云音乐API获取真实歌词");
+                return decision;
+            }
+            logger.warn("⚠️ 找不到音乐技能，回退到网络搜索");
+            // 如果找不到音乐技能，回退到 CHAT 模式
+            decision.setActionType(ActionType.CHAT);
+            decision.setConfidence(0.9);
+            decision.setExplanation("识别为音乐查询，使用网络搜索");
             return decision;
         }
         
-        // 2. 检查是否为明确的天气查询
+        // 2. 检查是否是明确的天气查询
         boolean isWeatherQuery = isWeatherQuery(query);
         if (isWeatherQuery) {
             Skill weatherSkill = findSkillById("weather-skill");
@@ -60,7 +81,7 @@ public class EnhancedAgentOrchestrator {
             return decision;
         }
         
-        // 4. 检查是否为事实查询
+        // 4. 检查是否是事实查询
         if (isFactQuery(query)) {
             decision.setActionType(ActionType.USE_RAG);
             decision.setConfidence(0.8);

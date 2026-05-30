@@ -3,9 +3,7 @@ package com.enterprise.knowledge.infrastructure.search;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 @Service
@@ -31,29 +29,31 @@ public class WebSearchService {
         }
 
         StringBuilder result = new StringBuilder();
-        result.append("🌐 网络搜索结果\n");
-        result.append("═══════════════════════════\n");
-        result.append("搜索关键词: ").append(query).append("\n\n");
+        result.append("## 搜索结果\n\n");
+        result.append("**关键词**：").append(query).append("\n\n");
 
         List<SearchResult> results = performSearch(query, maxResults);
 
         if (results.isEmpty()) {
-            result.append("未找到相关结果，建议尝试其他关键词。\n");
+            result.append("未找到相关搜索结果，请尝试其他关键词。\n");
         } else {
             for (int i = 0; i < results.size(); i++) {
                 SearchResult r = results.get(i);
-                result.append(String.format("【结果 %d】\n", i + 1));
-                result.append("标题: ").append(r.title).append("\n");
-                result.append("来源: ").append(r.source).append("\n");
+                result.append("### ").append(i + 1).append(". ").append(r.title).append("\n\n");
+                
                 if (r.snippet != null && !r.snippet.isEmpty()) {
-                    result.append("摘要: ").append(r.snippet).append("\n");
+                    result.append(r.snippet).append("\n\n");
                 }
-                result.append("链接: ").append(r.url).append("\n");
-                result.append("\n");
+                
+                result.append("**来源**：").append(r.source);
+                if (r.url != null && !r.url.isEmpty()) {
+                    result.append(" | [查看详情](").append(r.url).append(")");
+                }
+                result.append("\n\n");
+                result.append("---\n\n");
             }
 
-            result.append("═══════════════════════════\n");
-            result.append("共找到 ").append(results.size()).append(" 条相关结果\n");
+            result.append("> 💡 提示：共找到 ").append(results.size()).append(" 条相关结果");
         }
 
         return result.toString();

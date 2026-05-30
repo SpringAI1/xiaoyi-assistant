@@ -21,7 +21,7 @@ public class LangChainConfig {
         return MessageWindowChatMemory.withMaxMessages(20);
     }
 
-    @Bean
+    @Bean("chatModel")
     public ChatLanguageModel qwenChatModel(
             @Value("${langchain.qwen.api-key}") String apiKey,
             @Value("${langchain.qwen.base-url}") String baseUrl,

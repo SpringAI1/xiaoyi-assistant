@@ -2,7 +2,6 @@ package com.enterprise.knowledge.service;
 
 import com.enterprise.knowledge.application.service.RagService;
 import com.enterprise.knowledge.domain.DocumentMetadata;
-import com.enterprise.knowledge.domain.entity.Document;
 import com.enterprise.knowledge.infrastructure.document.DocumentParser;
 import com.enterprise.knowledge.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Service

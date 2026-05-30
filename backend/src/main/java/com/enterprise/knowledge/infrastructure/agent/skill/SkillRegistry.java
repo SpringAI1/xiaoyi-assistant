@@ -79,17 +79,36 @@ public class SkillRegistry {
             }
         }
         
-        // 按优先级、使用频率、置信度综合排序
+        // 优化后的技能优先级排序：
+        // 1. 音乐相关技能优先级最高（优先处理音乐查询）
+        // 2. 然后按技能优先级排序
+        // 3. 使用频率作为辅助
+        // 4. 置信度作为最后参考
         recommended.sort((a, b) -> {
+            // 音乐技能优先
+            boolean aIsMusicSkill = isMusicSkill(a);
+            boolean bIsMusicSkill = isMusicSkill(b);
+            if (aIsMusicSkill && !bIsMusicSkill) return -1;
+            if (!aIsMusicSkill && bIsMusicSkill) return 1;
+            
+            // 搜索技能其次
+            boolean aIsSearchSkill = isSearchSkill(a);
+            boolean bIsSearchSkill = isSearchSkill(b);
+            if (aIsSearchSkill && !bIsSearchSkill) return -1;
+            if (!aIsSearchSkill && bIsSearchSkill) return 1;
+            
+            // 然后按优先级排序
             int priorityCompare = Integer.compare(b.getPriority(), a.getPriority());
             if (priorityCompare != 0) return priorityCompare;
             
+            // 使用频率
             int usageCompare = Integer.compare(
                 skillUsage.getOrDefault(b.getId(), 0),
                 skillUsage.getOrDefault(a.getId(), 0)
             );
             if (usageCompare != 0) return usageCompare;
             
+            // 置信度
             return Double.compare(
                 skillConfidence.getOrDefault(b.getId(), 0.5),
                 skillConfidence.getOrDefault(a.getId(), 0.5)
@@ -102,9 +121,14 @@ public class SkillRegistry {
     // 判断是否是音乐相关查询
     private boolean isMusicQuery(String query) {
         List<String> musicKeywords = Arrays.asList(
-            "周杰伦", "歌词", "歌曲", "音乐", "歌手", "专辑", "单曲", 
-            "演唱会", "作曲", "作词", "晴天歌词", "晴天的歌",
-            "歌名", "华语", "流行歌", "经典歌曲"
+            "周杰伦", "邓紫棋", "薛之谦", "林俊杰", "陈奕迅", "张杰", "许嵩", 
+            "华晨宇", "王菲", "孙燕姿", "王力宏", "陶喆", "蔡依林", "李荣浩",
+            "五月天", "Beyond", "朴树", "许巍", "汪峰", "张韶涵", "梁静茹",
+            "刘若英", "任贤齐", "周华健", "费玉清", "张信哲", "刘德华", "张学友",
+            "歌词", "歌曲", "音乐", "歌手", "专辑", "单曲", "演唱会", "作曲", "作词",
+            "歌名", "华语", "流行歌", "经典歌曲", "热门歌曲", "新歌", "排行榜",
+            "播放", "听歌", "泡沫", "演员", "江南", "告白气球", "光年之外",
+            "天外来物", "绅士", "动物世界", "青花瓷", "晴天", "七里香", "稻香"
         );
         
         for (String keyword : musicKeywords) {
@@ -167,5 +191,19 @@ public class SkillRegistry {
                 skillConfidence.put(skill.getId(), newConfidence);
             }
         }
+    }
+    
+    private boolean isMusicSkill(Skill skill) {
+        String id = skill.getId().toLowerCase();
+        String name = skill.getName().toLowerCase();
+        return id.contains("music") || id.contains("lyric") || 
+               name.contains("音乐") || name.contains("歌词");
+    }
+    
+    private boolean isSearchSkill(Skill skill) {
+        String id = skill.getId().toLowerCase();
+        String name = skill.getName().toLowerCase();
+        return id.contains("search") || id.contains("web") || 
+               name.contains("搜索") || name.contains("查询");
     }
 }

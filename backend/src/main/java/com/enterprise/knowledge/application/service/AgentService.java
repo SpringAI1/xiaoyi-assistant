@@ -3,12 +3,11 @@ package com.enterprise.knowledge.application.service;
 import com.enterprise.knowledge.domain.ChatMessage;
 import com.enterprise.knowledge.domain.ChatResponse;
 import com.enterprise.knowledge.infrastructure.agent.EnhancedAgentOrchestrator;
-import com.enterprise.knowledge.infrastructure.agent.IntentRecognizer;
 import com.enterprise.knowledge.infrastructure.agent.skill.Skill;
-import com.enterprise.knowledge.infrastructure.agent.skill.SkillManager;
 import com.enterprise.knowledge.infrastructure.agent.tool.CityExtractor;
 import com.enterprise.knowledge.infrastructure.agent.tool.DocumentGeneratorTool;
 import com.enterprise.knowledge.infrastructure.agent.tool.MediaGeneratorTool;
+import com.enterprise.knowledge.infrastructure.agent.tool.WebSearchTool;
 import com.enterprise.knowledge.infrastructure.agent.tool.WeatherTool;
 import com.enterprise.knowledge.infrastructure.rag.EnhancedRagEngine;
 import com.enterprise.knowledge.service.ConversationMemoryService;
@@ -17,15 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class AgentService {
 
     private static final Logger logger = LoggerFactory.getLogger(AgentService.class);
 
     private final ChatLanguageModel chatModel;
-    private final IntentRecognizer intentRecognizer;
     private final RagService ragService;
     private final EnhancedRagEngine enhancedRagEngine;
     private final EnhancedAgentOrchestrator orchestrator;
@@ -33,11 +29,10 @@ public class AgentService {
     private final MediaGeneratorTool mediaGeneratorTool;
     private final WeatherTool weatherTool;
     private final CityExtractor cityExtractor;
+    private final WebSearchTool webSearchTool;
     private final ConversationMemoryService memoryService;
-    private final SkillManager skillManager;
 
     public AgentService(ChatLanguageModel chatModel,
-                        IntentRecognizer intentRecognizer,
                         RagService ragService,
                         EnhancedRagEngine enhancedRagEngine,
                         EnhancedAgentOrchestrator orchestrator,
@@ -45,10 +40,9 @@ public class AgentService {
                         MediaGeneratorTool mediaGeneratorTool,
                         WeatherTool weatherTool,
                         CityExtractor cityExtractor,
-                        ConversationMemoryService memoryService,
-                        SkillManager skillManager) {
+                        WebSearchTool webSearchTool,
+                        ConversationMemoryService memoryService) {
         this.chatModel = chatModel;
-        this.intentRecognizer = intentRecognizer;
         this.ragService = ragService;
         this.enhancedRagEngine = enhancedRagEngine;
         this.orchestrator = orchestrator;
@@ -56,8 +50,8 @@ public class AgentService {
         this.mediaGeneratorTool = mediaGeneratorTool;
         this.weatherTool = weatherTool;
         this.cityExtractor = cityExtractor;
+        this.webSearchTool = webSearchTool;
         this.memoryService = memoryService;
-        this.skillManager = skillManager;
     }
 
     public ChatResponse agentAnswer(String userPrompt) {
@@ -135,12 +129,24 @@ public class AgentService {
     }
 
     private ChatResponse handleDirectChat(String prompt, String history) {
+        // 先尝试使用 WebSearchTool 搜索信息
+        String searchResult = webSearchTool.search(prompt);
+        
+        // 如果搜索结果有效，直接返回搜索结果
+        if (searchResult != null && !searchResult.isEmpty()) {
+            ChatResponse response = new ChatResponse();
+            response.setContent(searchResult);
+            response.setResponseType(ChatResponse.ResponseType.DIRECT_ANSWER);
+            return response;
+        }
+        
+        // 否则使用 LLM 回答
         String chatPrompt = (history.isEmpty() ? "" : history + "\n\n") + """
                 作为小易助手，请回答以下问题：
                 
-                %s
+                用户问题：%s
                 
-                请给出准确、有用的回答。
+                请给出准确、有用、自然的回答，就像通义千问一样友好和专业。
                 """.formatted(prompt);
 
         String answer = chatModel.generate(chatPrompt);
@@ -337,7 +343,7 @@ public class AgentService {
     }
 
     public String generatePPT(String topic) {
-        return documentGeneratorTool.generatePPT(topic, "");
+        return documentGeneratorTool.generatePPTByDescription(topic);
     }
 
     public byte[] generatePPTDocument(String topic) throws Exception {

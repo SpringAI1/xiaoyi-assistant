@@ -2,8 +2,6 @@ package com.enterprise.knowledge.infrastructure.agent.tool;
 
 import org.springframework.stereotype.Component;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +10,6 @@ public class SearchTool {
 
     public String webSearch(String query) {
         try {
-            String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);
-            
             StringBuilder result = new StringBuilder();
             result.append("🔍 搜索结果：").append(query).append("\n\n");
             

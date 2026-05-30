@@ -37,7 +37,7 @@ public class RagRetriever {
 
     public List<String> retrieve(String query, int topK) {
         Embedding queryEmbedding = embeddingModel.embed(query).content();
-        List<EmbeddingMatch<TextSegment>> matches = embeddingStore.findRelevant(queryEmbedding, topK);
+        List<EmbeddingMatch<TextSegment>> matches = embeddingStore.findRelevant(queryEmbedding, topK, 0.0);
 
         return matches.stream()
                 .map(match -> match.embedded().text())

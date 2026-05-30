@@ -10,7 +10,6 @@ import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.model.chat.ChatLanguageModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.store.embedding.EmbeddingStore;
-import dev.langchain4j.store.embedding.EmbeddingMatch;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -201,30 +200,29 @@ public class RagService {
         for (DocumentMetadata metadata : documentStore.values()) {
             if (metadata.getEmbeddingIds() == null) continue;
             
-            for (String embeddingId : metadata.getEmbeddingIds()) {
-                try {
-                    var matchOpt = embeddingStore.findRelevant(
-                        embeddingModel.embed(query).content(),
-                        1
-                    );
-                    
-                    if (!matchOpt.isEmpty()) {
-                        String content = matchOpt.get(0).embedded().text();
-                        boolean match = true;
-                        for (String keyword : keywords) {
-                            if (!content.toLowerCase().contains(keyword)) {
-                                match = false;
-                                break;
-                            }
-                        }
-                        if (match && !results.contains(content)) {
-                            results.add(content);
-                            if (results.size() >= limit) break;
+            try {
+                var matchOpt = embeddingStore.findRelevant(
+                    embeddingModel.embed(query).content(),
+                    1,
+                    0.0
+                );
+                
+                if (!matchOpt.isEmpty()) {
+                    String content = matchOpt.get(0).embedded().text();
+                    boolean match = true;
+                    for (String keyword : keywords) {
+                        if (!content.toLowerCase().contains(keyword)) {
+                            match = false;
+                            break;
                         }
                     }
-                } catch (Exception e) {
-                    continue;
+                    if (match && !results.contains(content)) {
+                        results.add(content);
+                        if (results.size() >= limit) break;
+                    }
                 }
+            } catch (Exception e) {
+                continue;
             }
             if (results.size() >= limit) break;
         }

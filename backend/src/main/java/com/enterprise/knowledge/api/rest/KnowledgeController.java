@@ -11,7 +11,6 @@ import com.enterprise.knowledge.infrastructure.search.WebSearchService;
 import com.enterprise.knowledge.service.AsyncDocumentService;
 import com.enterprise.knowledge.service.ConversationMemoryService;
 import com.enterprise.knowledge.service.RateLimitService;
-import dev.langchain4j.model.chat.ChatLanguageModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,7 +30,6 @@ public class KnowledgeController {
     private final DualEngineCoordinator coordinator;
     private final AsyncDocumentService documentService;
     private final RagService ragService;
-    private final ChatLanguageModel chatModel;
     private final WebSearchService webSearchService;
     private final AgentService agentService;
     private final ConversationMemoryService memoryService;
@@ -41,7 +39,6 @@ public class KnowledgeController {
     public KnowledgeController(DualEngineCoordinator coordinator,
                                AsyncDocumentService documentService,
                                RagService ragService,
-                               ChatLanguageModel chatModel,
                                WebSearchService webSearchService,
                                AgentService agentService,
                                ConversationMemoryService memoryService,
@@ -50,7 +47,6 @@ public class KnowledgeController {
         this.coordinator = coordinator;
         this.documentService = documentService;
         this.ragService = ragService;
-        this.chatModel = chatModel;
         this.webSearchService = webSearchService;
         this.agentService = agentService;
         this.memoryService = memoryService;

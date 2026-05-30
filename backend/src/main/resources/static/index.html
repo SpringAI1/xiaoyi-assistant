@@ -658,21 +658,32 @@
             renderConversations();
             updateChatCount();
 
+            // 检查是否有保存的当前会话ID
+            const savedConversationId = localStorage.getItem('currentConversationId');
+            
             // 然后处理当前会话
             if (conversations.length === 0) {
                 // 如果没有对话，创建新的
                 await createNewChat();
             } else {
-                // 如果有对话，使用最近的一个
-                const latestChat = conversations[0];
-                currentConversationId = latestChat.id;
+                // 优先使用保存的会话ID，如果没有则使用最近的一个
+                let targetChat = null;
+                if (savedConversationId) {
+                    targetChat = conversations.find(c => c.id === savedConversationId);
+                }
+                if (!targetChat) {
+                    targetChat = conversations[0];
+                }
+                
+                currentConversationId = targetChat.id;
+                localStorage.setItem('currentConversationId', currentConversationId);
 
                 const titleEl = document.getElementById('currentChatTitle');
                 if (titleEl) {
-                    titleEl.textContent = latestChat.title;
+                    titleEl.textContent = targetChat.title;
                 }
 
-                renderChatMessages(latestChat.messages);
+                renderChatMessages(targetChat.messages);
             }
 
             loadDocuments();
@@ -682,6 +693,7 @@
 
         function logout() {
             localStorage.removeItem('xiaoyi_user');
+            localStorage.removeItem('currentConversationId');
             currentUser = null;
             stopMonitoringRefresh();
             document.getElementById('loginScreen').style.display = 'flex';
@@ -708,6 +720,7 @@
 
                     conversations.unshift(newChat);
                     currentConversationId = chatId;
+                    localStorage.setItem('currentConversationId', currentConversationId);
 
                     const titleEl = document.getElementById('currentChatTitle');
                     if (titleEl) {
@@ -755,6 +768,7 @@
             }
 
             currentConversationId = chatId;
+            localStorage.setItem('currentConversationId', currentConversationId);
 
             const titleEl = document.getElementById('currentChatTitle');
             if (titleEl) {

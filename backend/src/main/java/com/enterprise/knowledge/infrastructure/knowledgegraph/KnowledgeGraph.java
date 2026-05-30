@@ -23,7 +23,6 @@ public class KnowledgeGraph {
     public void addRelationship(String from, String to, String relationType) {
         relationships.computeIfAbsent(from, k -> new HashSet<>()).add(to);
         
-        String edgeKey = from + "->" + to;
         KnowledgeEdge edge = new KnowledgeEdge();
         edge.from = from;
         edge.to = to;

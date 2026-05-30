@@ -2,19 +2,15 @@ package com.enterprise.knowledge;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-/**
- * 小易助手 - 启动类
- * Agent + RAG 双引擎架构
- */
 @SpringBootApplication
 public class MainApplication {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext context = SpringApplication.run(MainApplication.class, args);
+        SpringApplication.run(MainApplication.class, args);
 
         System.out.println("\n");
         System.out.println("╔═══════════════════════════════════════════════════════════╗");
@@ -30,13 +26,10 @@ public class MainApplication {
         System.out.println();
     }
 
-    /**
-     * 配置 CORS（跨域支持）
-     */
     WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
-            public void addCorsMappings(CorsRegistry registry) {
+            public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:3000", "http://localhost:8080", "*")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")

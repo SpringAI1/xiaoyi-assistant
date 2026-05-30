@@ -1,7 +1,6 @@
 package com.enterprise.knowledge.repository;
 
 import com.enterprise.knowledge.domain.entity.Document;
-import com.enterprise.knowledge.domain.entity.DocumentChunk;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
